@@ -1,0 +1,867 @@
+openapi: 3.0.3
+info:
+  title: Maven Wrapper Bootstrap API
+  description: API specification for Zero-Setup Maven Builds Across Environments system providing automated Maven wrapper setup, secure downloads, and build monitoring
+  version: 1.0.0
+  contact:
+    name: Maven Wrapper API Support
+    email: support@mavenbootstrap.com
+servers:
+  - url: https://api.mavenbootstrap.com/v1
+    description: Production server
+  - url: https://staging-api.mavenbootstrap.com/v1
+    description: Staging server
+  - url: http://localhost:8080/v1
+    description: Local development server
+security:
+  - BearerAuth: []
+paths:
+  /bootstrap:
+    post:
+      tags:
+        - Bootstrap
+      summary: Initialize Maven wrapper bootstrap
+      description: Automates Maven wrapper setup for consistent, reproducible builds
+      operationId: initializeBootstrap
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BootstrapRequest'
+      responses:
+        '200':
+          description: Bootstrap initiated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BootstrapResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /bootstrap/{bootstrapId}/status:
+    get:
+      tags:
+        - Bootstrap
+      summary: Get bootstrap status
+      description: Retrieves the current status of a bootstrap operation
+      operationId: getBootstrapStatus
+      parameters:
+        - name: bootstrapId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Unique identifier for the bootstrap operation
+      responses:
+        '200':
+          description: Bootstrap status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BootstrapStatus'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/discovery:
+    post:
+      tags:
+        - Configuration
+      summary: Discover project configuration
+      description: Automatically discovers Maven configuration for a project
+      operationId: discoverConfiguration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfigDiscoveryRequest'
+      responses:
+        '200':
+          description: Configuration discovered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfigDiscoveryResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration:
+    get:
+      tags:
+        - Configuration
+      summary: Get configuration templates
+      description: Retrieves available configuration templates
+      operationId: getConfigurationTemplates
+      parameters:
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum:
+              - spring-boot
+              - web-app
+              - library
+              - microservice
+          description: Filter by project type
+        - name: version
+          in: query
+          schema:
+            type: string
+          description: Maven version filter
+      responses:
+        '200':
+          description: Configuration templates retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfigurationTemplatesResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /downloads/maven-wrapper:
+    get:
+      tags:
+        - Downloads
+      summary: Download Maven wrapper
+      description: Securely download Maven wrapper files with verification
+      operationId: downloadMavenWrapper
+      parameters:
+        - name: version
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Maven version to download
+        - name: platform
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - windows
+              - linux
+              - macos
+          description: Target platform
+        - name: checksum
+          in: query
+          schema:
+            type: boolean
+            default: true
+          description: Include checksum verification
+      responses:
+        '200':
+          description: Maven wrapper download successful
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+              description: Attachment filename
+            X-Checksum-SHA256:
+              schema:
+                type: string
+              description: SHA256 checksum of the file
+            X-File-Size:
+              schema:
+                type: integer
+              description: File size in bytes
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /downloads/verify:
+    post:
+      tags:
+        - Downloads
+      summary: Verify download integrity
+      description: Verify the integrity of downloaded Maven wrapper files
+      operationId: verifyDownload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerificationRequest'
+      responses:
+        '200':
+          description: Verification completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerificationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /cache/status:
+    get:
+      tags:
+        - Cache
+      summary: Get cache status
+      description: Retrieves current cache status and statistics
+      operationId: getCacheStatus
+      responses:
+        '200':
+          description: Cache status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CacheStatusResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /cache/invalidate:
+    post:
+      tags:
+        - Cache
+      summary: Invalidate cache entries
+      description: Invalidates specific cache entries or patterns
+      operationId: invalidateCache
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CacheInvalidationRequest'
+      responses:
+        '200':
+          description: Cache invalidation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CacheInvalidationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/health:
+    get:
+      tags:
+        - Monitoring
+      summary: Health check endpoint
+      description: Returns the health status of the service
+      operationId: getHealthStatus
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+        '503':
+          description: Service is unhealthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+  /monitoring/metrics:
+    get:
+      tags:
+        - Monitoring
+      summary: Get service metrics
+      description: Retrieves service performance and usage metrics
+      operationId: getMetrics
+      parameters:
+        - name: timeRange
+          in: query
+          schema:
+            type: string
+            enum:
+              - 1h
+              - 24h
+              - 7d
+              - 30d
+            default: 1h
+          description: Time range for metrics
+        - name: metrics
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - downloads
+                - bootstrap_operations
+                - cache_hits
+                - response_times
+          description: Specific metrics to retrieve
+      responses:
+        '200':
+          description: Metrics retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/builds:
+    get:
+      tags:
+        - Monitoring
+      summary: Get build monitoring data
+      description: Retrieves real-time build status and monitoring information
+      operationId: getBuildMonitoring
+      parameters:
+        - name: projectId
+          in: query
+          schema:
+            type: string
+          description: Filter by project ID
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum:
+              - running
+              - completed
+              - failed
+              - pending
+          description: Filter by build status
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          description: Number of results to return
+      responses:
+        '200':
+          description: Build monitoring data retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildMonitoringResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token for authentication
+  schemas:
+    BootstrapRequest:
+      type: object
+      required:
+        - projectPath
+        - mavenVersion
+      properties:
+        projectPath:
+          type: string
+          description: Path to the project directory
+        mavenVersion:
+          type: string
+          description: Desired Maven version
+          pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'
+        projectType:
+          type: string
+          enum:
+            - spring-boot
+            - web-app
+            - library
+            - microservice
+          description: Type of project
+        customProperties:
+          type: object
+          additionalProperties:
+            type: string
+          description: Custom Maven properties
+    BootstrapResponse:
+      type: object
+      properties:
+        bootstrapId:
+          type: string
+          format: uuid
+          description: Unique identifier for the bootstrap operation
+        status:
+          type: string
+          enum:
+            - initiated
+            - in_progress
+            - completed
+            - failed
+          description: Current status of the bootstrap operation
+        message:
+          type: string
+          description: Status message
+        estimatedCompletion:
+          type: string
+          format: date-time
+          description: Estimated completion time
+        downloadUrl:
+          type: string
+          format: uri
+          description: URL to download the bootstrap files
+    BootstrapStatus:
+      type: object
+      properties:
+        bootstrapId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum:
+            - initiated
+            - in_progress
+            - completed
+            - failed
+        progress:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: Progress percentage
+        currentStep:
+          type: string
+          description: Current operation step
+        startTime:
+          type: string
+          format: date-time
+        completionTime:
+          type: string
+          format: date-time
+        errorMessage:
+          type: string
+          description: Error message if status is failed
+        logs:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEntry'
+    ConfigDiscoveryRequest:
+      type: object
+      required:
+        - projectPath
+      properties:
+        projectPath:
+          type: string
+          description: Path to the project directory
+        scanDepth:
+          type: integer
+          minimum: 1
+          maximum: 10
+          default: 3
+          description: Directory scan depth
+        includeSubmodules:
+          type: boolean
+          default: true
+          description: Include Maven submodules in discovery
+    ConfigDiscoveryResponse:
+      type: object
+      properties:
+        projectType:
+          type: string
+          enum:
+            - spring-boot
+            - web-app
+            - library
+            - microservice
+        detectedMavenVersion:
+          type: string
+        recommendedConfiguration:
+          $ref: '#/components/schemas/MavenConfiguration'
+        submodules:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubmoduleInfo'
+        detectedDependencies:
+          type: array
+          items:
+            $ref: '#/components/schemas/DependencyInfo'
+    ConfigurationTemplatesResponse:
+      type: object
+      properties:
+        templates:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConfigurationTemplate'
+        totalCount:
+          type: integer
+    VerificationRequest:
+      type: object
+      required:
+        - fileName
+        - checksum
+        - algorithm
+      properties:
+        fileName:
+          type: string
+          description: Name of the file to verify
+        checksum:
+          type: string
+          description: Expected checksum value
+        algorithm:
+          type: string
+          enum:
+            - SHA256
+            - MD5
+            - SHA1
+          description: Checksum algorithm
+        fileSize:
+          type: integer
+          description: Expected file size in bytes
+    VerificationResponse:
+      type: object
+      properties:
+        isValid:
+          type: boolean
+          description: Whether the verification passed
+        checksumMatch:
+          type: boolean
+          description: Whether the checksum matches
+        fileSizeMatch:
+          type: boolean
+          description: Whether the file size matches
+        actualChecksum:
+          type: string
+          description: Actual calculated checksum
+        actualFileSize:
+          type: integer
+          description: Actual file size
+        verificationTime:
+          type: string
+          format: date-time
+    CacheStatusResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - healthy
+            - degraded
+            - offline
+        hitRate:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Cache hit rate percentage
+        totalKeys:
+          type: integer
+          description: Total number of keys in cache
+        memoryUsage:
+          type: object
+          properties:
+            used:
+              type: integer
+              description: Used memory in bytes
+            total:
+              type: integer
+              description: Total available memory in bytes
+            percentage:
+              type: number
+              minimum: 0
+              maximum: 100
+        lastUpdated:
+          type: string
+          format: date-time
+    CacheInvalidationRequest:
+      type: object
+      properties:
+        keys:
+          type: array
+          items:
+            type: string
+          description: Specific cache keys to invalidate
+        patterns:
+          type: array
+          items:
+            type: string
+          description: Cache key patterns to invalidate
+        invalidateAll:
+          type: boolean
+          default: false
+          description: Invalidate all cache entries
+    CacheInvalidationResponse:
+      type: object
+      properties:
+        invalidatedKeys:
+          type: integer
+          description: Number of keys that were invalidated
+        operationTime:
+          type: number
+          description: Time taken for the operation in milliseconds
+        success:
+          type: boolean
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - UP
+            - DOWN
+            - DEGRADED
+        components:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              status:
+                type: string
+                enum:
+                  - UP
+                  - DOWN
+              details:
+                type: object
+                additionalProperties: true
+        timestamp:
+          type: string
+          format: date-time
+    MetricsResponse:
+      type: object
+      properties:
+        timeRange:
+          type: string
+        metrics:
+          type: object
+          properties:
+            downloads:
+              $ref: '#/components/schemas/MetricData'
+            bootstrap_operations:
+              $ref: '#/components/schemas/MetricData'
+            cache_hits:
+              $ref: '#/components/schemas/MetricData'
+            response_times:
+              $ref: '#/components/schemas/MetricData'
+        generatedAt:
+          type: string
+          format: date-time
+    BuildMonitoringResponse:
+      type: object
+      properties:
+        builds:
+          type: array
+          items:
+            $ref: '#/components/schemas/BuildInfo'
+        totalCount:
+          type: integer
+        summary:
+          type: object
+          properties:
+            running:
+              type: integer
+            completed:
+              type: integer
+            failed:
+              type: integer
+            pending:
+              type: integer
+    MavenConfiguration:
+      type: object
+      properties:
+        mavenVersion:
+          type: string
+        javaVersion:
+          type: string
+        properties:
+          type: object
+          additionalProperties:
+            type: string
+        repositories:
+          type: array
+          items:
+            $ref: '#/components/schemas/RepositoryInfo'
+    SubmoduleInfo:
+      type: object
+      properties:
+        name:
+          type: string
+        path:
+          type: string
+        artifactId:
+          type: string
+        groupId:
+          type: string
+    DependencyInfo:
+      type: object
+      properties:
+        groupId:
+          type: string
+        artifactId:
+          type: string
+        version:
+          type: string
+        scope:
+          type: string
+    ConfigurationTemplate:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        projectType:
+          type: string
+        mavenVersion:
+          type: string
+        configuration:
+          $ref: '#/components/schemas/MavenConfiguration'
+    RepositoryInfo:
+      type: object
+      properties:
+        id:
+          type: string
+        url:
+          type: string
+          format: uri
+        name:
+          type: string
+    LogEntry:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        level:
+          type: string
+          enum:
+            - DEBUG
+            - INFO
+            - WARN
+            - ERROR
+        message:
+          type: string
+    MetricData:
+      type: object
+      properties:
+        current:
+          type: number
+        average:
+          type: number
+        peak:
+          type: number
+        total:
+          type: number
+        timeSeries:
+          type: array
+          items:
+            type: object
+            properties:
+              timestamp:
+                type: string
+                format: date-time
+              value:
+                type: number
+    BuildInfo:
+      type: object
+      properties:
+        buildId:
+          type: string
+        projectId:
+          type: string
+        status:
+          type: string
+          enum:
+            - running
+            - completed
+            - failed
+            - pending
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        duration:
+          type: integer
+          description: Build duration in seconds
+        mavenVersion:
+          type: string
+        logs:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEntry'
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Error code
+            message:
+              type: string
+              description: Error message
+            details:
+              type: string
+              description: Detailed error information
+            timestamp:
+              type: string
+              format: date-time
+            traceId:
+              type: string
+              description: Request trace ID for debugging
+          required:
+            - code
+            - message
+            - timestamp
+  responses:
+    BadRequest:
+      description: Bad request - invalid input parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Authentication required or invalid credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+tags:
+  - name: Bootstrap
+    description: Maven wrapper bootstrap operations
+  - name: Configuration
+    description: Configuration discovery and management
+  - name: Downloads
+    description: Secure download services
+  - name: Cache
+    description: Cache management operations
+  - name: Monitoring
+    description: Service monitoring and metrics

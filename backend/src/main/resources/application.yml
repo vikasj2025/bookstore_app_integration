@@ -1,0 +1,242 @@
+spring:
+  application:
+    name: maven-wrapper-bootstrap-api
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+  # Database Configuration
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/maven_bootstrap}
+    username: ${DB_USERNAME:maven_bootstrap}
+    password: ${DB_PASSWORD:maven_bootstrap}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: ${DB_POOL_SIZE:20}
+      minimum-idle: ${DB_POOL_MIN_IDLE:5}
+      connection-timeout: ${DB_CONNECTION_TIMEOUT:30000}
+      idle-timeout: ${DB_IDLE_TIMEOUT:600000}
+      max-lifetime: ${DB_MAX_LIFETIME:1800000}
+
+  # JPA Configuration
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: ${JPA_SHOW_SQL:false}
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        use_sql_comments: true
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+
+  # Flyway Configuration
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    validate-on-migrate: true
+
+  # Redis Configuration
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${REDIS_DATABASE:0}
+      timeout: ${REDIS_TIMEOUT:2000ms}
+      lettuce:
+        pool:
+          max-active: ${REDIS_POOL_MAX_ACTIVE:8}
+          max-idle: ${REDIS_POOL_MAX_IDLE:8}
+          min-idle: ${REDIS_POOL_MIN_IDLE:0}
+          max-wait: ${REDIS_POOL_MAX_WAIT:-1ms}
+
+  # Cache Configuration
+  cache:
+    type: redis
+    redis:
+      time-to-live: ${CACHE_TTL:3600000} # 1 hour
+      cache-null-values: false
+
+  # Security Configuration
+  security:
+    require-ssl: ${SECURITY_REQUIRE_SSL:true}
+
+  # Server Configuration
+  servlet:
+    multipart:
+      max-file-size: ${MAX_FILE_SIZE:100MB}
+      max-request-size: ${MAX_REQUEST_SIZE:100MB}
+
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: ${SERVER_CONTEXT_PATH:/v1}
+  ssl:
+    enabled: ${SSL_ENABLED:false}
+    key-store: ${SSL_KEYSTORE:}
+    key-store-password: ${SSL_KEYSTORE_PASSWORD:}
+    key-store-type: ${SSL_KEYSTORE_TYPE:PKCS12}
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:your-very-long-secret-key-here-at-least-256-bits}
+  expiration: ${JWT_EXPIRATION:86400000} # 24 hours
+  refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000} # 7 days
+  issuer: ${JWT_ISSUER:maven-wrapper-bootstrap-api}
+
+# Application Configuration
+app:
+  maven:
+    default-download-url: ${MAVEN_DEFAULT_DOWNLOAD_URL:https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven}
+    wrapper-version: ${MAVEN_WRAPPER_VERSION:3.9.5}
+    download-timeout: ${MAVEN_DOWNLOAD_TIMEOUT:300000} # 5 minutes
+    max-retry-attempts: ${MAVEN_MAX_RETRY_ATTEMPTS:3}
+    retry-delay: ${MAVEN_RETRY_DELAY:1000} # 1 second
+  security:
+    cors:
+      allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,https://localhost:3000}
+      allowed-methods: ${CORS_ALLOWED_METHODS:GET,POST,PUT,DELETE,OPTIONS}
+      allowed-headers: ${CORS_ALLOWED_HEADERS:*}
+      allow-credentials: ${CORS_ALLOW_CREDENTIALS:true}
+    rate-limit:
+      enabled: ${RATE_LIMIT_ENABLED:true}
+      requests-per-minute: ${RATE_LIMIT_REQUESTS_PER_MINUTE:100}
+  download:
+    base-path: ${DOWNLOAD_BASE_PATH:/tmp/maven-downloads}
+    cleanup-interval: ${DOWNLOAD_CLEANUP_INTERVAL:3600000} # 1 hour
+    max-file-age: ${DOWNLOAD_MAX_FILE_AGE:86400000} # 24 hours
+
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,env
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: ${ACTUATOR_HEALTH_SHOW_DETAILS:when-authorized}
+      show-components: always
+    metrics:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+      percentiles:
+        http.server.requests: 0.5,0.95,0.99
+  health:
+    redis:
+      enabled: true
+    db:
+      enabled: true
+
+# Logging Configuration
+logging:
+  level:
+    com.mavenbootstrap: ${LOG_LEVEL:INFO}
+    org.springframework.security: ${SECURITY_LOG_LEVEL:INFO}
+    org.springframework.web: ${WEB_LOG_LEVEL:INFO}
+    org.hibernate.SQL: ${SQL_LOG_LEVEL:WARN}
+    org.hibernate.type.descriptor.sql.BasicBinder: ${SQL_BIND_LOG_LEVEL:WARN}
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%X{traceId},%X{spanId}] %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%X{traceId},%X{spanId}] %logger{36} - %msg%n"
+  file:
+    name: ${LOG_FILE:logs/maven-bootstrap-api.log}
+    max-size: ${LOG_MAX_SIZE:10MB}
+    max-history: ${LOG_MAX_HISTORY:30}
+
+# SpringDoc OpenAPI Configuration
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: ${SWAGGER_ENABLED:true}
+  info:
+    title: Maven Wrapper Bootstrap API
+    description: API specification for Zero-Setup Maven Builds Across Environments
+    version: 1.0.0
+    contact:
+      name: Maven Wrapper API Support
+      email: support@mavenbootstrap.com
+  servers:
+    - url: https://api.mavenbootstrap.com/v1
+      description: Production server
+    - url: https://staging-api.mavenbootstrap.com/v1
+      description: Staging server
+    - url: http://localhost:8080/v1
+      description: Local development server
+
+---
+# Development Profile
+spring:
+  config:
+    activate:
+      on-profile: dev
+  jpa:
+    show-sql: true
+  security:
+    require-ssl: false
+server:
+  ssl:
+    enabled: false
+logging:
+  level:
+    com.mavenbootstrap: DEBUG
+    org.springframework.security: DEBUG
+
+---
+# Test Profile
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: 
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+  flyway:
+    enabled: false
+  data:
+    redis:
+      host: localhost
+      port: 6379
+logging:
+  level:
+    com.mavenbootstrap: DEBUG
+    org.springframework.security: DEBUG
+
+---
+# Production Profile
+spring:
+  config:
+    activate:
+      on-profile: prod
+  jpa:
+    show-sql: false
+  security:
+    require-ssl: true
+server:
+  ssl:
+    enabled: true
+logging:
+  level:
+    com.mavenbootstrap: INFO
+    root: WARN

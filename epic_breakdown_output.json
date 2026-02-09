@@ -1,0 +1,244 @@
+{
+  "epicId": "22b50fb3-e19b-44ac-87c1-adccde15defb",
+  "epicKey": "BOOKSTORE-6",
+  "epicSummary": "Online Bookstore Application Setup and Deployment Foundation",
+  "epicDescription": "This epic establishes the core technical foundation for the online bookstore application by implementing the Spring Boot framework infrastructure. It ensures the application can start reliably, discover and configure all necessary components automatically, and run as a standalone service without complex setup requirements. This foundation enables rapid deployment and reduces operational complexity while supporting all future bookstore features.",
+  "owner": "Not Specified",
+  "status": "In Progress",
+  "sections": {
+    "frontend": {
+      "functional_requirements": "Enable users to browse and search the online bookstore catalog with real-time inventory updates, add books to shopping cart, view book details with ratings and reviews, manage user profile and order history, and complete secure checkout process. Provide an intuitive and responsive interface for discovering books across different categories and genres with advanced filtering and sorting capabilities.",
+      "technical_requirements": "Implement using React 18 and TypeScript for type-safe component development. Use Tailwind CSS for modern, responsive styling and component design. Integrate state management using Redux Toolkit or Context API for cart and user session management. Implement React Router for client-side navigation. Use Axios or Fetch API for backend communication. Ensure full responsiveness across desktop, tablet, and mobile devices. Implement accessibility compliance (WCAG 2.1 AA standard). Use React Query for efficient data fetching and caching. Implement lazy loading for images and code splitting for optimal performance. Follow component-based architecture with reusable UI components.",
+      "devops_requirements": "Automate the build, test, and deployment pipeline for the frontend application to ensure fast delivery, reliability, and rollback capabilities. Use GitHub Actions for CI/CD pipeline with automated testing (Jest, React Testing Library), linting (ESLint), and code quality checks. Dockerize the React application using multi-stage builds with Nginx as the production web server. Deploy to Kubernetes cluster using Helm charts with configurable environment variables. Implement blue-green deployment strategy for zero-downtime releases. Set up CloudFront or CDN for static asset delivery. Configure Prometheus and Grafana for monitoring frontend performance metrics including page load times, API response times, and error rates. Implement automated alerts for high error rates and performance degradation.",
+      "stories": [
+        {
+          "storyId": "BOOKSTORE-FE-001",
+          "summary": "Implement responsive bookstore catalog layout with grid view",
+          "description": "Create a responsive book catalog page using React 18 and Tailwind CSS that displays books in a grid layout. The component should adapt seamlessly across desktop (4 columns), tablet (2 columns), and mobile (1 column) viewports. Include book cover images, title, author, price, and rating display. Implement skeleton loading states while data is being fetched.",
+          "assignee": "Not Assigned",
+          "status": "To Do",
+          "storyPoints": 5,
+          "priority": "High",
+          "labels": ["UI", "React", "Responsive", "Catalog"]
+        },
+        {
+          "storyId": "BOOKSTORE-FE-002",
+          "summary": "Build advanced book search and filter interface",
+          "description": "Develop a search interface with real-time autocomplete suggestions and advanced filtering options (category, price range, rating, author). Implement debounced search input to optimize API calls. Use TypeScript for type-safe filter state management. Include clear filter and sort options (price low-to-high, rating, newest arrivals).",
+          "assignee": "Not Assigned",
+          "status": "To Do",
+          "storyPoints": 8,
+          "priority": "High",
+          "labels": ["Search", "Filter", "TypeScript", "UX"]
+        },
+        {
+          "storyId": "BOOKSTORE-FE-003",
+          "summary": "Create shopping cart UI with real-time updates",
+          "description": "Build a shopping cart component that displays selected books with quantity controls, individual and total pricing. Implement add/remove/update quantity functionality with optimistic UI updates. Use Redux Toolkit or Context API for cart state management. Include persistent cart storage using localStorage. Display cart summary in header with item count badge.",
+          "assignee": "Not Assigned",
+          "status": "To Do",
+          "storyPoints": 8,
+          "priority": "High",
+          "labels": ["Cart", "State Management", "Redux", "UX"]
+        },
+        {
+          "storyId": "BOOKSTORE-FE-004",
+          "summary": "Implement user authentication and profile management UI",
+          "description": "Create login, registration, and profile management screens using React forms with validation. Implement JWT token storage and automatic token refresh logic. Build protected route components that redirect unauthenticated users. Include password strength indicator and form error handling with user-friendly messages. Implement logout functionality with cart preservation option.",
+          "assignee": "Not Assigned",
+          "status": "To Do",
+          "storyPoints": 8,
+          "priority": "High",
+          "labels": ["Authentication", "Security", "Forms", "JWT"]
+        },
+        {
+          "storyId": "BOOKSTORE-FE-005",
+          "summary": "Build book detail page with reviews and recommendations",
+          "description": "Create a comprehensive book detail page displaying full book information, high-resolution cover image, detailed description, author bio, customer reviews with ratings, and related book recommendations. Implement image zoom functionality and tabbed interface for reviews and details. Include add-to-cart and add-to-wishlist buttons with loading states.",
+          "assignee": "Not Assigned",
+          "status": "To Do",
+          "storyPoints": 5,
+          "priority": "Medium",
+          "labels": ["Detail Page", "Reviews", "Recommendations"]
+        },
+        {
+          "storyId": "BOOKSTORE-FE-006",
+          "summary": "Setup frontend CI/CD pipeline with GitHub Actions",
+          "description": "Configure GitHub Actions workflow for automated build, test, and deployment of the React application. Include steps for dependency installation, ESLint checks, unit tests with Jest and React Testing Library, build optimization, and Docker image creation. Implement automated deployment to Kubernetes staging environment on PR merge. Add code coverage reporting and quality gates.",
+          "assignee": "Not Assigned",
+          "status": "To Do",
+          "storyPoints": 5,
+          "priority": "High",
+          "labels": ["DevOps", "CI/CD", "GitHub Actions", "Automation"]
+        },
+        {
+          "storyId": "BOOKSTORE-FE-007",
+          "summary": "Dockerize React application with Nginx",
+          "description": "Create multi-stage Dockerfile for the React application with optimized production build. Use Node.js for build stage and Nginx for serving static files. Configure Nginx for SPA routing, gzip compression, and security headers. Implement environment variable injection for API endpoints. Optimize image size using Alpine base images.",
+          "assignee": "Not Assigned",
+          "status": "To Do",
+          "storyPoints": 3,
+          "priority": "High",
+          "labels": ["DevOps", "Docker", "Nginx", "Containerization"]
+        },
+        {
+          "storyId": "BOOKSTORE-FE-008",
+          "summary": "Configure frontend monitoring with Prometheus and Grafana",
+          "description": "Set up Prometheus metrics collection for frontend performance monitoring including page load times, API response times, error rates, and user interactions. Create Grafana dashboards for visualizing frontend metrics. Implement alerting rules for high error rates (>5%), slow page loads (>3s), and API failures. Include real user monitoring (RUM) metrics.",
+          "assignee": "Not Assigned",
+          "status": "To Do",
+          "storyPoints": 5,
+          "priority": "Medium",
+          "labels": ["DevOps", "Monitoring", "Prometheus", "Grafana", "Observability"]
+        }
+      ]
+    },
+    "backend": {
+      "functional_requirements": "Provide robust and scalable REST APIs for managing the complete bookstore operations including book catalog management (CRUD operations), user authentication and authorization, shopping cart operations, order processing and management, inventory tracking, payment processing integration, and user review and rating system. Ensure real-time inventory updates, secure transaction processing, and efficient data retrieval with pagination and filtering capabilities. Support bulk operations for administrative tasks and provide comprehensive search functionality across book metadata.",
+      "technical_requirements": "Develop microservices architecture using Spring Boot 3.x with Java 17+. Implement PostgreSQL as the primary relational database for transactional data with proper indexing and query optimization. Use Redis for caching frequently accessed data (book catalog, user sessions) and shopping cart storage to reduce database load and improve response times. Implement JWT-based authentication and authorization with role-based access control (RBAC) for admin and customer roles. Design RESTful APIs following OpenAPI 3.0 specification with comprehensive documentation. Implement API versioning (v1, v2) for backward compatibility. Use Spring Data JPA for database operations with optimized queries and lazy loading. Implement connection pooling with HikariCP. Add request validation using Bean Validation (JSR-380). Implement global exception handling with standardized error responses. Use Spring Security for authentication and authorization. Implement rate limiting to prevent API abuse. Add comprehensive logging using SLF4J and Logback with structured logging format. Implement database migration using Flyway or Liquibase.",
+      "devops_requirements": "Automate the complete build, test, deployment, and monitoring lifecycle for all backend microservices to ensure reliability, scalability, and quick recovery. Use GitHub Actions for CI/CD pipeline with automated unit tests (JUnit 5), integration tests (Testcontainers), code coverage reporting (JaCoCo with 80% minimum coverage), and security scanning (OWASP Dependency Check). Dockerize all Spring Boot services using layered JAR approach for optimal image caching and reduced build times. Deploy to Kubernetes cluster using Helm charts with configurable values for different environments (dev, staging, production). Implement horizontal pod autoscaling (HPA) based on CPU and memory metrics. Configure Kubernetes health checks (liveness and readiness probes) for all services. Set up Prometheus for metrics collection from Spring Boot Actuator endpoints including JVM metrics, HTTP request metrics, database connection pool metrics, and custom business metrics. Create comprehensive Grafana dashboards for monitoring service health, API performance, database performance, and cache hit rates. Implement distributed tracing using Jaeger or Zipkin for request flow visualization across microservices. Configure alerting rules for critical issues including API error rates >2%, response time >500ms, database connection pool exhaustion, and service downtime. Implement centralized logging using ELK stack (Elasticsearch, Logstash, Kibana) or Loki for log aggregation and analysis. Set up automated database backups with point-in-time recovery capability.",
+      "stories": [
+        {
+          "storyId": "dc9e99d0-4b77-47b6-96db-e10527abdfc3",
+          "summary": "Initialize and Bootstrap Spring Boot Application for Online Bookstore",
+          "description": "This story represents the main entry point for the Spring Boot online bookstore application. Bootstrap the application by implementing SpringApplication.run() which initializes the Spring container, performs auto-configuration, sets up the embedded servlet container (Tomcat), and prepares the application to handle requests. Configure @SpringBootApplication annotation to enable component scanning, auto-configuration, and Spring Boot features. Ensure application starts successfully with all beans initialized and dependency injection completed.",
+          "assignee": "Not Assigned",
+          "status": "In Progress",
+          "storyPoints": 3,
+          "priority": "High",
+          "labels": ["Spring Boot", "Bootstrap", "Foundation", "Infrastructure"]
+        },
+        {
+          "storyId": "BOOKSTORE-BE-001",
+          "summary": "Create Book Catalog REST API endpoints",
+          "description": "Develop comprehensive REST API endpoints for book catalog management: GET /api/v1/books (list with pagination, filtering, sorting), GET /api/v1/books/{id} (book details), POST /api/v1/books (create - admin only), PUT /api/v1/books/{id} (update - admin only), DELETE /api/v1/books/{id} (delete - admin only). Implement request/response DTOs, service layer business logic, and JPA repository with custom queries. Include validation for all input parameters and proper HTTP status codes.",
+          "assignee": "Not Assigned",
+          "status": "To Do",
+          "storyPoints": 8,
+          "priority": "High",
+          "labels": ["API", "Spring Boot", "REST", "CRUD", "Catalog"]
+        },
+        {
+          "storyId": "BOOKSTORE-BE-002",
+          "summary": "Implement PostgreSQL database schema and migrations",
+          "description": "Design and implement PostgreSQL database schema for the bookstore application including tables for books, users, orders, order_items, reviews, and categories. Create proper relationships with foreign keys, indexes for frequently queried columns (ISBN, title, author, category), and constraints for data integrity. Implement database migration scripts using Flyway with versioned migrations. Include seed data for initial book catalog and admin user.",
+          "assignee": "Not Assigned",
+          "status": "To Do",
+          "storyPoints": 5,
+          "priority": "High",
+          "labels": ["Database", "PostgreSQL", "Schema", "Migration", "Flyway"]
+        },
+        {
+          "storyId": "BOOKSTORE-BE-003",
+          "summary": "Implement Redis caching for book catalog and user sessions",
+          "description": "Integrate Redis caching layer to improve application performance. Implement caching for frequently accessed book catalog data with TTL of 1 hour. Use Redis for storing user sessions and shopping cart data with appropriate expiration policies. Configure Spring Cache abstraction with Redis as the cache provider. Implement cache eviction strategies for data updates (create, update, delete operations). Add cache statistics monitoring through Spring Boot Actuator.",
+          "assignee": "Not Assigned",
+          "status": "To Do",
+          "storyPoints": 5,
+          "priority": "High",
+          "labels": ["Performance", "Caching", "Redis", "Optimization"]
+        },
+        {
+          "storyId": "BOOKSTORE-BE-004",
+          "summary": "Implement JWT-based authentication and authorization service",
+          "description": "Build authentication service with endpoints: POST /api/v1/auth/register (user registration), POST /api/v1/auth/login (authentication with JWT token generation), POST /api/v1/auth/refresh (token refresh), POST /api/v1/auth/logout (invalidate token). Implement Spring Security configuration with JWT token validation filter. Use BCrypt for password hashing. Implement role-based access control (ROLE_USER, ROLE_ADMIN). Store refresh tokens in Redis with expiration. Include comprehensive input validation and error handling.",
+          "assignee": "Not Assigned",
+          "status": "To Do",
+          "storyPoints": 8,
+          "priority": "High",
+          "labels": ["Security", "Authentication", "JWT", "Spring Security", "Authorization"]
+        },
+        {
+          "storyId": "BOOKSTORE-BE-005",
+          "summary": "Create Shopping Cart API endpoints",
+          "description": "Implement shopping cart management APIs: GET /api/v1/cart (retrieve user cart), POST /api/v1/cart/items (add book to cart), PUT /api/v1/cart/items/{bookId} (update quantity), DELETE /api/v1/cart/items/{bookId} (remove item), DELETE /api/v1/cart (clear cart). Store cart data in Redis with user session. Implement cart validation including inventory availability checks and price verification. Return cart summary with total price calculation.",
+          "assignee": "Not Assigned",
+          "status": "To Do",
+          "storyPoints": 5,
+          "priority": "High",
+          "labels": ["API", "Cart", "Redis", "Business Logic"]
+        },
+        {
+          "storyId": "BOOKSTORE-BE-006",
+          "summary": "Implement Order Management API endpoints",
+          "description": "Develop order processing APIs: POST /api/v1/orders (create order from cart), GET /api/v1/orders (list user orders with pagination), GET /api/v1/orders/{id} (order details), PUT /api/v1/orders/{id}/status (update order status - admin only). Implement transactional order creation with inventory deduction, cart clearing, and order confirmation. Include order status workflow (PENDING, CONFIRMED, SHIPPED, DELIVERED, CANCELLED). Send order confirmation notifications.",
+          "assignee": "Not Assigned",
+          "status": "To Do",
+          "storyPoints": 8,
+          "priority": "High",
+          "labels": ["API", "Orders", "Transactions", "Business Logic"]
+        },
+        {
+          "storyId": "BOOKSTORE-BE-007",
+          "summary": "Implement advanced book search API with full-text search",
+          "description": "Create advanced search endpoint GET /api/v1/books/search with support for full-text search across title, author, description, and ISBN. Implement filtering by category, price range, rating, and availability. Support sorting by relevance, price, rating, and publication date. Use PostgreSQL full-text search capabilities or integrate Elasticsearch for advanced search features. Implement pagination and return faceted search results with counts.",
+          "assignee": "Not Assigned",
+          "status": "To Do",
+          "storyPoints": 8,
+          "priority": "Medium",
+          "labels": ["API", "Search", "Full-Text Search", "Performance"]
+        },
+        {
+          "storyId": "BOOKSTORE-BE-008",
+          "summary": "Setup backend CI/CD pipeline with GitHub Actions",
+          "description": "Configure GitHub Actions workflow for automated backend build, test, and deployment. Include steps for: Maven/Gradle build, unit tests execution with JUnit 5, integration tests with Testcontainers (PostgreSQL, Redis), code coverage reporting with JaCoCo (minimum 80% coverage), static code analysis with SonarQube, security vulnerability scanning with OWASP Dependency Check, Docker image build and push to container registry, and automated deployment to Kubernetes staging environment. Implement quality gates to prevent merging code with test failures or low coverage.",
+          "assignee": "Not Assigned",
+          "status": "To Do",
+          "storyPoints": 8,
+          "priority": "High",
+          "labels": ["DevOps", "CI/CD", "GitHub Actions", "Testing", "Automation"]
+        },
+        {
+          "storyId": "BOOKSTORE-BE-009",
+          "summary": "Dockerize Spring Boot microservices with layered approach",
+          "description": "Create optimized Dockerfiles for all Spring Boot services using layered JAR approach for better caching and faster builds. Implement multi-stage builds with Maven/Gradle build stage and JRE runtime stage. Use Eclipse Temurin JRE 17 Alpine as base image for minimal size. Configure proper health check endpoints, environment variable injection, and non-root user execution. Optimize Docker image layers for dependency caching. Include docker-compose configuration for local development with PostgreSQL and Redis.",
+          "assignee": "Not Assigned",
+          "status": "To Do",
+          "storyPoints": 5,
+          "priority": "High",
+          "labels": ["DevOps", "Docker", "Containerization", "Optimization"]
+        },
+        {
+          "storyId": "BOOKSTORE-BE-010",
+          "summary": "Create Kubernetes Helm charts for backend services",
+          "description": "Develop Helm charts for deploying all backend microservices to Kubernetes. Include configurable values for different environments (dev, staging, production) with proper resource limits and requests. Configure horizontal pod autoscaling (HPA) based on CPU (70%) and memory (80%) thresholds. Implement liveness probes (actuator/health/liveness) and readiness probes (actuator/health/readiness). Set up ConfigMaps for application properties and Secrets for sensitive data (database credentials, JWT secret). Configure service discovery, ingress rules, and network policies.",
+          "assignee": "Not Assigned",
+          "status": "To Do",
+          "storyPoints": 8,
+          "priority": "High",
+          "labels": ["DevOps", "Kubernetes", "Helm", "Orchestration", "Deployment"]
+        },
+        {
+          "storyId": "BOOKSTORE-BE-011",
+          "summary": "Configure comprehensive monitoring with Prometheus and Grafana",
+          "description": "Set up Prometheus for collecting metrics from Spring Boot Actuator endpoints including JVM metrics (heap, GC, threads), HTTP request metrics (count, duration, errors), database connection pool metrics, cache metrics (hit/miss rates), and custom business metrics (orders created, revenue). Create comprehensive Grafana dashboards for visualizing service health, API performance (p50, p95, p99 latencies), database performance, cache efficiency, and business KPIs. Implement alerting rules for critical conditions: API error rate >2%, response time p95 >500ms, database connection pool >90%, service downtime, and high memory usage >85%.",
+          "assignee": "Not Assigned",
+          "status": "To Do",
+          "storyPoints": 8,
+          "priority": "Medium",
+          "labels": ["DevOps", "Monitoring", "Prometheus", "Grafana", "Observability", "Alerting"]
+        },
+        {
+          "storyId": "BOOKSTORE-BE-012",
+          "summary": "Implement distributed tracing with Jaeger",
+          "description": "Integrate Jaeger for distributed tracing across all microservices. Configure Spring Cloud Sleuth for automatic trace and span generation. Implement trace context propagation across service boundaries and external API calls. Add custom spans for critical business operations (order creation, payment processing). Set up Jaeger UI for trace visualization and analysis. Configure sampling strategies (probabilistic sampling at 10% for production). Enable trace correlation with logs using trace IDs.",
+          "assignee": "Not Assigned",
+          "status": "To Do",
+          "storyPoints": 5,
+          "priority": "Medium",
+          "labels": ["DevOps", "Tracing", "Jaeger", "Observability", "Microservices"]
+        },
+        {
+          "storyId": "BOOKSTORE-BE-013",
+          "summary": "Setup centralized logging with ELK stack",
+          "description": "Implement centralized logging infrastructure using ELK stack (Elasticsearch, Logstash, Kibana). Configure all Spring Boot services to output structured JSON logs with correlation IDs, user context, and request metadata. Set up Logstash pipelines for log parsing, enrichment, and forwarding to Elasticsearch. Create Kibana dashboards for log analysis, error tracking, and audit trails. Implement log retention policies (30 days for application logs, 90 days for audit logs). Configure alerts for critical error patterns and anomalies.",
+          "assignee": "Not Assigned",
+          "status": "To Do",
+          "storyPoints": 8,
+          "priority": "Medium",
+          "labels": ["DevOps", "Logging", "ELK", "Elasticsearch", "Kibana", "Observability"]
+        }
+      ]
+    }
+  }
+}

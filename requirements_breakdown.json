@@ -1,0 +1,174 @@
+{
+  "epicId": "b545c881-418c-4611-a03f-7da41f26500f",
+  "epicKey": "AUTO-165",
+  "epicSummary": "Online Bookstore Application Foundation and Setup",
+  "epicDescription": "This epic establishes the complete foundation for the online bookstore application, including core modules, routing architecture, form handling, API communication, and service configuration. It creates the essential infrastructure that enables the bookstore to function as a modern single-page application with seamless navigation, user interactions, and data management. This foundation supports all customer-facing features including browsing books, managing shopping carts, and completing purchases.",
+  "owner": "Not Provided",
+  "status": "In Progress",
+  "sections": {
+    "frontend": {
+      "functional_requirements": "Enable seamless customer navigation throughout the bookstore without page reloads through single-page application architecture. Establish proper dependency injection setup for modular architecture, testability, and centralized service management. Support customer interactions including browsing books, managing shopping carts, search functionality, and checkout processes.",
+      "technical_requirements": "Implement using Angular framework with TypeScript. Configure dependency injection container with all required services including HTTP clients for API communication, routing services for navigation, state management services for cart and user data, and utility services. Register services with appropriate lifetimes (Singleton, Scoped, Transient) based on usage patterns. Ensure all registered services can be properly resolved and injected into components throughout the application. Support both development and production environments with appropriate service implementations.",
+      "devops_requirements": "Automate build and deployment pipeline for Angular application. Use CI/CD tools (GitHub Actions, Jenkins, or Azure DevOps) for automated testing and deployment. Implement environment-specific configuration management for API base URLs and service endpoints. Set up static code analysis and linting in the build pipeline. Configure automated unit and integration testing. Implement containerization using Docker for consistent deployment across environments. Set up monitoring for frontend performance metrics and error tracking using tools like Application Insights or Sentry.",
+      "stories": [
+        {
+          "storyId": "dc6d3cb5-f219-49ed-b65b-237d7b3e4cf6",
+          "summary": "Configure Application Services and Dependency Injection Container",
+          "description": "As a developer, I want to configure the application's service container with all required dependencies and service registrations so that the application has proper dependency injection setup enabling modular architecture, testability, and centralized service management for the online bookstore. This story establishes the dependency injection infrastructure by configuring the service container with all necessary services, including HTTP clients for API communication, routing services for navigation, state management services for cart and user data, and utility services.",
+          "assignee": "Not Provided",
+          "status": "In Progress",
+          "storyPoints": 5,
+          "priority": "High",
+          "labels": ["Angular", "Dependency Injection", "Services", "Architecture", "Foundation"]
+        },
+        {
+          "storyId": "FE-001",
+          "summary": "Implement HTTP Client Service with Authentication",
+          "description": "Create HTTP client service with base URL configuration and authentication handlers. Ensure single shared HttpClient instance to prevent socket exhaustion. Configure interceptors for authentication tokens and error handling. Support both development and production API endpoints.",
+          "assignee": "Not Provided",
+          "status": "To Do",
+          "storyPoints": 3,
+          "priority": "High",
+          "labels": ["HTTP", "API", "Authentication", "Services"]
+        },
+        {
+          "storyId": "FE-002",
+          "summary": "Implement Shopping Cart State Management Service",
+          "description": "Create scoped service for shopping cart state management. Implement add/remove/update cart item functionality. Ensure cart state persists across navigation. Use scoped lifetime for user-specific data management.",
+          "assignee": "Not Provided",
+          "status": "To Do",
+          "storyPoints": 5,
+          "priority": "High",
+          "labels": ["State Management", "Shopping Cart", "Services"]
+        },
+        {
+          "storyId": "FE-003",
+          "summary": "Implement User Session Management Service",
+          "description": "Create scoped service for user session and authentication state management. Handle user login/logout state. Manage user profile data and preferences. Implement session timeout handling.",
+          "assignee": "Not Provided",
+          "status": "To Do",
+          "storyPoints": 5,
+          "priority": "High",
+          "labels": ["State Management", "Authentication", "Session", "Services"]
+        },
+        {
+          "storyId": "FE-004",
+          "summary": "Configure Environment-Specific Service Implementations",
+          "description": "Create environment configuration files for development and production. Externalize API base URLs and configuration settings. Implement environment-specific service providers. Support feature flags for different environments.",
+          "assignee": "Not Provided",
+          "status": "To Do",
+          "storyPoints": 3,
+          "priority": "Medium",
+          "labels": ["Configuration", "Environment", "DevOps"]
+        },
+        {
+          "storyId": "FE-005",
+          "summary": "Create Service Interfaces for Third-Party Integrations",
+          "description": "Define interfaces for all third-party integrations to enable mocking and testing. Create abstraction layer for external dependencies. Implement interface-based service registration. Support dependency injection of mock implementations for testing.",
+          "assignee": "Not Provided",
+          "status": "To Do",
+          "storyPoints": 3,
+          "priority": "Medium",
+          "labels": ["Testing", "Interfaces", "Architecture"]
+        }
+      ]
+    },
+    "backend": {
+      "functional_requirements": "Provide robust and scalable API endpoints to support the online bookstore application. Deliver book catalog data, manage shopping cart operations, process customer orders, handle user authentication and authorization, and manage customer profiles. Support real-time inventory updates and order status tracking. Enable search and filtering capabilities for book catalog.",
+      "technical_requirements": "Develop RESTful API services using Spring Boot framework with Java. Implement proper API versioning (e.g., /api/v1/). Use PostgreSQL or MySQL as the primary data store for book catalog, orders, and customer data. Implement caching using Redis for frequently accessed data like book catalog and inventory. Secure all endpoints using JWT-based authentication and role-based authorization. Implement OpenAPI/Swagger documentation for all API endpoints. Use proper HTTP status codes and error handling. Implement request validation and data sanitization. Support CORS configuration for frontend integration.",
+      "devops_requirements": "Automate build, test, and deployment pipeline for backend services. Use CI/CD tools (GitHub Actions, Jenkins, or Azure DevOps) for continuous integration and deployment. Dockerize all backend services for consistent deployment. Deploy to Kubernetes cluster using Helm charts for orchestration. Implement database migration automation using Flyway or Liquibase. Set up Prometheus and Grafana for monitoring API performance, error rates, and latency. Configure alerts for critical metrics like API errors, high latency, and service downtime. Implement centralized logging using ELK stack or similar. Set up automated backup and disaster recovery procedures. Implement blue-green or canary deployment strategies for zero-downtime releases.",
+      "stories": [
+        {
+          "storyId": "BE-001",
+          "summary": "Create Book Catalog API Endpoints",
+          "description": "Expose REST endpoints for book catalog operations: GET /api/v1/books (list all books with pagination), GET /api/v1/books/{id} (get book details), GET /api/v1/books/search (search books by title, author, category). Implement Redis caching for catalog data. Include proper error handling and validation.",
+          "assignee": "Not Provided",
+          "status": "To Do",
+          "storyPoints": 8,
+          "priority": "High",
+          "labels": ["API", "Spring Boot", "Catalog", "Redis"]
+        },
+        {
+          "storyId": "BE-002",
+          "summary": "Create Shopping Cart API Endpoints",
+          "description": "Expose REST endpoints for shopping cart operations: POST /api/v1/cart/items (add item), PUT /api/v1/cart/items/{id} (update quantity), DELETE /api/v1/cart/items/{id} (remove item), GET /api/v1/cart (get cart summary). Implement user-specific cart management with JWT authentication. Use Redis for cart session storage.",
+          "assignee": "Not Provided",
+          "status": "To Do",
+          "storyPoints": 8,
+          "priority": "High",
+          "labels": ["API", "Spring Boot", "Shopping Cart", "Authentication"]
+        },
+        {
+          "storyId": "BE-003",
+          "summary": "Implement User Authentication and Authorization Service",
+          "description": "Create authentication endpoints: POST /api/v1/auth/login, POST /api/v1/auth/register, POST /api/v1/auth/logout, POST /api/v1/auth/refresh. Implement JWT token generation and validation. Configure role-based access control (RBAC) for customer and admin roles. Implement password hashing using BCrypt.",
+          "assignee": "Not Provided",
+          "status": "To Do",
+          "storyPoints": 8,
+          "priority": "High",
+          "labels": ["Authentication", "Security", "JWT", "Spring Security"]
+        },
+        {
+          "storyId": "BE-004",
+          "summary": "Create Order Management API Endpoints",
+          "description": "Expose REST endpoints for order operations: POST /api/v1/orders (create order), GET /api/v1/orders (list user orders), GET /api/v1/orders/{id} (get order details), PUT /api/v1/orders/{id}/status (update order status). Implement transaction management for order processing. Include inventory validation and update.",
+          "assignee": "Not Provided",
+          "status": "To Do",
+          "storyPoints": 13,
+          "priority": "High",
+          "labels": ["API", "Orders", "Transactions", "Spring Boot"]
+        },
+        {
+          "storyId": "BE-005",
+          "summary": "Implement Database Schema and Repository Layer",
+          "description": "Design and implement database schema for books, users, orders, and cart tables. Create JPA entities and repository interfaces. Implement database migration scripts using Flyway. Set up database connection pooling and optimization. Create indexes for frequently queried fields.",
+          "assignee": "Not Provided",
+          "status": "To Do",
+          "storyPoints": 8,
+          "priority": "High",
+          "labels": ["Database", "JPA", "PostgreSQL", "Flyway"]
+        },
+        {
+          "storyId": "BE-006",
+          "summary": "Configure Redis Caching Layer",
+          "description": "Set up Redis cache configuration for Spring Boot application. Implement caching for book catalog, user sessions, and shopping cart data. Configure cache eviction policies and TTL. Implement cache-aside pattern for data consistency. Add cache monitoring and metrics.",
+          "assignee": "Not Provided",
+          "status": "To Do",
+          "storyPoints": 5,
+          "priority": "Medium",
+          "labels": ["Redis", "Caching", "Performance"]
+        },
+        {
+          "storyId": "BE-007",
+          "summary": "Implement OpenAPI Documentation",
+          "description": "Configure Swagger/OpenAPI for API documentation. Document all endpoints with request/response schemas, authentication requirements, and error codes. Include example requests and responses. Set up Swagger UI for interactive API testing.",
+          "assignee": "Not Provided",
+          "status": "To Do",
+          "storyPoints": 3,
+          "priority": "Medium",
+          "labels": ["Documentation", "OpenAPI", "Swagger"]
+        },
+        {
+          "storyId": "BE-008",
+          "summary": "Set Up CI/CD Pipeline for Backend Services",
+          "description": "Configure GitHub Actions or Jenkins pipeline for automated build, test, and deployment. Implement automated unit and integration testing in pipeline. Set up Docker image building and pushing to container registry. Configure deployment to Kubernetes using Helm charts. Implement automated database migrations in deployment process.",
+          "assignee": "Not Provided",
+          "status": "To Do",
+          "storyPoints": 8,
+          "priority": "High",
+          "labels": ["DevOps", "CI/CD", "Kubernetes", "Docker"]
+        },
+        {
+          "storyId": "BE-009",
+          "summary": "Configure Monitoring and Observability",
+          "description": "Set up Prometheus for metrics collection from Spring Boot actuator endpoints. Configure Grafana dashboards for API performance, error rates, and latency monitoring. Implement alerts for critical metrics (API errors >5%, latency >2s, service downtime). Set up centralized logging with correlation IDs for request tracing.",
+          "assignee": "Not Provided",
+          "status": "To Do",
+          "storyPoints": 5,
+          "priority": "Medium",
+          "labels": ["DevOps", "Monitoring", "Prometheus", "Grafana"]
+        }
+      ]
+    }
+  }
+}

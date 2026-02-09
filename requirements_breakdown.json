@@ -1,0 +1,204 @@
+{
+  "epicId": "3",
+  "epicKey": "AUTO-165",
+  "epicSummary": "Online Bookstore Application Foundation and Setup",
+  "epicDescription": "This epic establishes the complete foundation for the online bookstore application, including core modules, routing architecture, form handling, API communication, and service configuration. It creates the essential infrastructure that enables the bookstore to function as a modern single-page application with seamless navigation, user interactions, and data management. This foundation supports all customer-facing features including browsing books, managing shopping carts, and completing purchases.",
+  "owner": "Not specified",
+  "status": "In Progress",
+  "sections": {
+    "frontend": {
+      "functional_requirements": "Enable seamless customer navigation throughout the bookstore without page reloads through single-page application architecture. Establish reliable data communication with backend systems for product information, orders, and customer management. Create structured form handling capabilities for customer interactions including checkout, registration, and search. Configure reusable service infrastructure that maintains consistent application state and supports business operations. Provide a consistent user interface framework that ensures uniform experience across all bookstore sections.",
+      "technical_requirements": "Implement using Angular framework with TypeScript. Configure dependency injection container with all required services including HTTP clients for API communication, routing services for navigation, state management services for cart and user data, and utility services. Services must be registered with appropriate lifetimes (Singleton, Scoped, Transient) based on usage patterns. API communication services must be configured with base URLs and authentication handlers. HTTP services must use a single shared HttpClient instance to prevent socket exhaustion. Scoped services must be used for user-specific data like shopping cart and session management. API base URLs and configuration must be externalized for environment-specific deployments. All third-party integrations must be registered through interfaces to enable mocking and testing. Implement HTTP interceptors for authentication (JWT token attachment), error handling, and logging. Support both development and production environments with appropriate service implementations.",
+      "devops_requirements": "Set up CI/CD pipeline using GitHub Actions for automated builds and deployments. Configure environment-specific builds (development, staging, production) with appropriate API endpoints and feature flags. Implement automated testing in the pipeline including unit tests, integration tests, and e2e tests. Use Docker for containerization of the Angular application with multi-stage builds to optimize image size. Deploy to Kubernetes cluster using Helm charts with proper resource limits and health checks. Configure Nginx as reverse proxy for serving the Angular application. Set up monitoring using Prometheus and Grafana with custom metrics for application performance, API response times, and user interactions. Implement logging aggregation using ELK stack (Elasticsearch, Logstash, Kibana) for centralized log management. Configure alerts for critical errors, high API latency, and application downtime. Implement blue-green deployment strategy for zero-downtime releases. Set up automated rollback mechanisms based on health check failures or error rate thresholds.",
+      "stories": [
+        {
+          "storyId": "AUTO-165-1",
+          "summary": "Configure Application Module with Dependency Injection Container",
+          "description": "Set up the root AppModule with all required service registrations including HTTP client, routing services, state management, and utility services. Configure services with appropriate lifetimes (Singleton, Scoped, Transient) and register HTTP interceptors for authentication, error handling, and logging. Ensure proper environment-specific configuration for development and production.",
+          "assignee": "Frontend Developer",
+          "status": "In Progress",
+          "storyPoints": 5,
+          "priority": "High",
+          "labels": ["Angular", "DI", "Configuration", "Foundation"]
+        },
+        {
+          "storyId": "AUTO-165-2",
+          "summary": "Implement Core Application Services",
+          "description": "Create BookService, CartService, OrderService, UserService, and AuthService with proper HTTP communication, error handling, and state management. Implement services as Singletons or Scoped based on their usage patterns. Ensure all services use shared HttpClient instance and proper error handling.",
+          "assignee": "Frontend Developer",
+          "status": "In Progress",
+          "storyPoints": 8,
+          "priority": "High",
+          "labels": ["Angular", "Services", "API Integration"]
+        },
+        {
+          "storyId": "AUTO-165-3",
+          "summary": "Create HTTP Interceptors for Auth, Logging, and Error Handling",
+          "description": "Implement AuthInterceptor to automatically attach JWT tokens to requests and handle token refresh on 401 responses. Create ErrorInterceptor for centralized error handling and user notifications. Implement LoggingInterceptor for request/response logging and monitoring.",
+          "assignee": "Frontend Developer",
+          "status": "In Progress",
+          "storyPoints": 5,
+          "priority": "High",
+          "labels": ["Angular", "Interceptors", "Security", "Logging"]
+        },
+        {
+          "storyId": "AUTO-165-4",
+          "summary": "Implement State Management Service",
+          "description": "Create StateManagementService to manage application-wide state including current route, loading status, notifications, and user preferences. Implement reactive state management using RxJS BehaviorSubjects and Observables. Add persistence for user preferences using localStorage.",
+          "assignee": "Frontend Developer",
+          "status": "In Progress",
+          "storyPoints": 5,
+          "priority": "Medium",
+          "labels": ["Angular", "State Management", "RxJS"]
+        },
+        {
+          "storyId": "AUTO-165-5",
+          "summary": "Configure Environment-Specific Settings",
+          "description": "Set up environment configuration files for development and production with appropriate API base URLs, logging settings, and feature flags. Ensure configuration is properly injected into services through dependency injection.",
+          "assignee": "Frontend Developer",
+          "status": "In Progress",
+          "storyPoints": 2,
+          "priority": "Medium",
+          "labels": ["Angular", "Configuration", "Environment"]
+        },
+        {
+          "storyId": "AUTO-165-6",
+          "summary": "Set up CI/CD Pipeline for Frontend",
+          "description": "Configure GitHub Actions workflow for automated build, test, and deployment of the Angular application. Set up environment-specific builds, automated testing, Docker image creation, and deployment to Kubernetes cluster using Helm.",
+          "assignee": "DevOps Engineer",
+          "status": "To Do",
+          "storyPoints": 8,
+          "priority": "High",
+          "labels": ["DevOps", "CI/CD", "GitHub Actions", "Docker", "Kubernetes"]
+        },
+        {
+          "storyId": "AUTO-165-7",
+          "summary": "Configure Monitoring and Logging for Frontend",
+          "description": "Set up Prometheus and Grafana for monitoring application performance, API response times, and user interactions. Configure ELK stack for centralized log management. Create dashboards and alerts for critical metrics and errors.",
+          "assignee": "DevOps Engineer",
+          "status": "To Do",
+          "storyPoints": 5,
+          "priority": "Medium",
+          "labels": ["DevOps", "Monitoring", "Prometheus", "Grafana", "ELK"]
+        }
+      ]
+    },
+    "backend": {
+      "functional_requirements": "Provide RESTful APIs for book catalog management, user authentication and authorization, shopping cart operations, order processing, and user profile management. Support real-time inventory updates and order tracking. Enable secure payment processing integration. Implement business rules for pricing, discounts, and order validation. Provide APIs for search and filtering of books by various criteria (title, author, category, price range).",
+      "technical_requirements": "Develop microservices using Spring Boot framework with Java 17. Implement RESTful APIs following OpenAPI 3.0 specification. Use PostgreSQL as primary database for transactional data. Implement Redis caching for frequently accessed data (book catalog, user sessions). Use JWT for authentication and authorization. Implement API versioning (v1) for backward compatibility. Create separate microservices for: Book Catalog Service, User Service, Cart Service, Order Service, and Payment Service. Use Spring Cloud for service discovery and configuration management. Implement message queuing using RabbitMQ for asynchronous operations (order processing, notifications). Use Spring Data JPA for database operations with proper transaction management. Implement comprehensive error handling and validation. Create DTOs for API request/response with proper validation annotations. Use Lombok to reduce boilerplate code. Implement database migrations using Flyway. Configure connection pooling for database connections. Implement rate limiting and request throttling for API endpoints.",
+      "devops_requirements": "Automate the build, deployment, and monitoring of all bookstore microservices to ensure reliability, traceability, and quick rollbacks. Use GitHub Actions for CI/CD pipeline with automated testing, code quality checks, and security scanning. Dockerize all microservices with multi-stage builds for optimization. Deploy to Kubernetes cluster using Helm charts with proper resource limits, health checks, and auto-scaling configurations. Set up PostgreSQL using StatefulSets with persistent volumes and automated backups. Deploy Redis cluster for high availability caching. Configure Spring Cloud Config Server for centralized configuration management. Set up Prometheus and Grafana for observability with custom metrics for API performance, database query times, cache hit rates, and business metrics. Implement distributed tracing using Jaeger or Zipkin. Configure alerts for API errors, high latency (>500ms), database connection issues, and service downtime. Use ELK stack for centralized logging with structured logging format. Implement blue-green deployment strategy with automated rollback on failure. Set up database migration automation as part of deployment pipeline. Configure API Gateway (Kong or Spring Cloud Gateway) for routing, rate limiting, and security. Implement secrets management using Kubernetes Secrets or HashiCorp Vault.",
+      "stories": [
+        {
+          "storyId": "AUTO-165-8",
+          "summary": "Create Book Catalog Service with REST APIs",
+          "description": "Develop Spring Boot microservice for book catalog management. Implement REST endpoints for CRUD operations on books, search and filtering by title/author/category, and inventory management. Use PostgreSQL for data persistence and Redis for caching. Implement OpenAPI documentation.",
+          "assignee": "Backend Developer",
+          "status": "To Do",
+          "storyPoints": 13,
+          "priority": "High",
+          "labels": ["Spring Boot", "REST API", "PostgreSQL", "Redis", "Microservices"]
+        },
+        {
+          "storyId": "AUTO-165-9",
+          "summary": "Implement User Service with Authentication",
+          "description": "Create User Service microservice with user registration, login, profile management, and address management. Implement JWT-based authentication and authorization. Use Spring Security for security configuration. Store user data in PostgreSQL with proper password hashing.",
+          "assignee": "Backend Developer",
+          "status": "To Do",
+          "storyPoints": 13,
+          "priority": "High",
+          "labels": ["Spring Boot", "Security", "JWT", "Authentication", "PostgreSQL"]
+        },
+        {
+          "storyId": "AUTO-165-10",
+          "summary": "Develop Cart Service for Shopping Cart Management",
+          "description": "Build Cart Service microservice to handle shopping cart operations including add/remove items, update quantities, and cart persistence. Use Redis for session-based cart storage with PostgreSQL for persistent cart data. Implement cart expiration and cleanup.",
+          "assignee": "Backend Developer",
+          "status": "To Do",
+          "storyPoints": 8,
+          "priority": "High",
+          "labels": ["Spring Boot", "Redis", "PostgreSQL", "Microservices"]
+        },
+        {
+          "storyId": "AUTO-165-11",
+          "summary": "Create Order Service with Order Processing",
+          "description": "Implement Order Service microservice for order creation, order tracking, order history, and order cancellation. Integrate with Cart Service and Payment Service. Use RabbitMQ for asynchronous order processing and notifications. Store order data in PostgreSQL with proper transaction management.",
+          "assignee": "Backend Developer",
+          "status": "To Do",
+          "storyPoints": 13,
+          "priority": "High",
+          "labels": ["Spring Boot", "PostgreSQL", "RabbitMQ", "Microservices", "Transactions"]
+        },
+        {
+          "storyId": "AUTO-165-12",
+          "summary": "Implement Payment Service Integration",
+          "description": "Create Payment Service microservice to handle payment processing, payment validation, and payment status tracking. Integrate with external payment gateway (Stripe/PayPal). Implement proper error handling and retry mechanisms for payment failures.",
+          "assignee": "Backend Developer",
+          "status": "To Do",
+          "storyPoints": 13,
+          "priority": "Medium",
+          "labels": ["Spring Boot", "Payment Gateway", "Integration", "Microservices"]
+        },
+        {
+          "storyId": "AUTO-165-13",
+          "summary": "Set up Spring Cloud Infrastructure",
+          "description": "Configure Spring Cloud Config Server for centralized configuration management. Set up service discovery using Eureka or Consul. Implement API Gateway using Spring Cloud Gateway with routing, rate limiting, and security. Configure circuit breakers using Resilience4j.",
+          "assignee": "Backend Developer",
+          "status": "To Do",
+          "storyPoints": 8,
+          "priority": "High",
+          "labels": ["Spring Cloud", "Microservices", "API Gateway", "Service Discovery"]
+        },
+        {
+          "storyId": "AUTO-165-14",
+          "summary": "Implement Database Migrations and Connection Pooling",
+          "description": "Set up Flyway for database schema migrations across all microservices. Configure HikariCP connection pooling for optimal database performance. Create initial database schemas and seed data for development and testing.",
+          "assignee": "Backend Developer",
+          "status": "To Do",
+          "storyPoints": 5,
+          "priority": "Medium",
+          "labels": ["Database", "Flyway", "PostgreSQL", "Performance"]
+        },
+        {
+          "storyId": "AUTO-165-15",
+          "summary": "Set up CI/CD Pipeline for Backend Microservices",
+          "description": "Configure GitHub Actions workflows for all backend microservices with automated build, unit testing, integration testing, code quality checks (SonarQube), security scanning, Docker image creation, and deployment to Kubernetes using Helm. Implement automated database migration as part of deployment.",
+          "assignee": "DevOps Engineer",
+          "status": "To Do",
+          "storyPoints": 13,
+          "priority": "High",
+          "labels": ["DevOps", "CI/CD", "GitHub Actions", "Docker", "Kubernetes", "Helm"]
+        },
+        {
+          "storyId": "AUTO-165-16",
+          "summary": "Configure Kubernetes Infrastructure for Backend",
+          "description": "Set up Kubernetes cluster with namespaces for different environments (dev, staging, prod). Deploy PostgreSQL using StatefulSets with persistent volumes and automated backups. Deploy Redis cluster for high availability. Configure ingress controllers, load balancers, and auto-scaling policies.",
+          "assignee": "DevOps Engineer",
+          "status": "To Do",
+          "storyPoints": 13,
+          "priority": "High",
+          "labels": ["DevOps", "Kubernetes", "PostgreSQL", "Redis", "Infrastructure"]
+        },
+        {
+          "storyId": "AUTO-165-17",
+          "summary": "Implement Monitoring and Observability for Backend",
+          "description": "Set up Prometheus for metrics collection from all microservices. Create Grafana dashboards for API performance, database metrics, cache performance, and business metrics. Configure distributed tracing using Jaeger. Set up ELK stack for centralized logging. Create alerts for critical errors, high latency, and service failures.",
+          "assignee": "DevOps Engineer",
+          "status": "To Do",
+          "storyPoints": 8,
+          "priority": "High",
+          "labels": ["DevOps", "Monitoring", "Prometheus", "Grafana", "Jaeger", "ELK"]
+        },
+        {
+          "storyId": "AUTO-165-18",
+          "summary": "Configure Secrets Management and Security",
+          "description": "Implement secrets management using Kubernetes Secrets or HashiCorp Vault for database credentials, API keys, and JWT secrets. Configure security policies, network policies, and RBAC in Kubernetes. Set up SSL/TLS certificates for all services.",
+          "assignee": "DevOps Engineer",
+          "status": "To Do",
+          "storyPoints": 5,
+          "priority": "High",
+          "labels": ["DevOps", "Security", "Secrets Management", "Kubernetes"]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,164 @@
+# Application Configuration
+spring:
+  application:
+    name: automated-build-environment
+  
+  # Database Configuration
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:build_environment}
+    username: ${DB_USERNAME:build_env_user}
+    password: ${DB_PASSWORD:build_env_password}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+  
+  # JPA Configuration
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        use_sql_comments: false
+    open-in-view: false
+  
+  # Flyway Configuration
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    validate-on-migrate: true
+  
+  # Redis Configuration
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+  
+  # Cache Configuration
+  cache:
+    type: redis
+    redis:
+      time-to-live: 3600000 # 1 hour
+  
+  # Security Configuration
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${JWT_ISSUER_URI:http://localhost:8080}
+  
+  # Actuator Configuration
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: health,info,metrics,prometheus
+    endpoint:
+      health:
+        show-details: when-authorized
+    metrics:
+      export:
+        prometheus:
+          enabled: true
+  
+  # Async Configuration
+  task:
+    execution:
+      pool:
+        core-size: 5
+        max-size: 20
+        queue-capacity: 100
+      thread-name-prefix: build-env-async-
+
+# Server Configuration
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+    min-response-size: 1024
+
+# Logging Configuration
+logging:
+  level:
+    com.buildenvironment: ${LOG_LEVEL:INFO}
+    org.springframework.security: ${SECURITY_LOG_LEVEL:WARN}
+    org.hibernate.SQL: ${SQL_LOG_LEVEL:WARN}
+    org.hibernate.type.descriptor.sql.BasicBinder: ${SQL_PARAM_LOG_LEVEL:WARN}
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: ${LOG_FILE:logs/build-environment.log}
+
+# Application Specific Configuration
+app:
+  # JWT Configuration
+  jwt:
+    secret: ${JWT_SECRET:mySecretKey}
+    expiration: ${JWT_EXPIRATION:86400000} # 24 hours in milliseconds
+    refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000} # 7 days in milliseconds
+  
+  # Encryption Configuration
+  encryption:
+    secret-key: ${ENCRYPTION_SECRET_KEY:defaultSecretKey1234567890123456}
+  
+  # Build Tool Configuration
+  build-tools:
+    download-timeout: ${BUILD_TOOL_DOWNLOAD_TIMEOUT:300000} # 5 minutes
+    installation-path: ${BUILD_TOOL_INSTALLATION_PATH:/opt/build-tools}
+    max-concurrent-downloads: ${MAX_CONCURRENT_DOWNLOADS:5}
+  
+  # Health Check Configuration
+  health-check:
+    interval-hours: ${HEALTH_CHECK_INTERVAL:24}
+    timeout-seconds: ${HEALTH_CHECK_TIMEOUT:30}
+  
+  # Repository Access Configuration
+  repository:
+    validation-timeout: ${REPO_VALIDATION_TIMEOUT:30000} # 30 seconds
+    retry-attempts: ${REPO_RETRY_ATTEMPTS:3}
+  
+  # Snapshot Configuration
+  snapshots:
+    retention-days: ${SNAPSHOT_RETENTION_DAYS:30}
+    max-snapshots-per-environment: ${MAX_SNAPSHOTS_PER_ENV:10}
+
+# OpenAPI Configuration
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
+  info:
+    title: Automated Build Environment API
+    description: API for automated build tool detection, provisioning, configuration, and management
+    version: 1.0.0
+    contact:
+      name: Build Environment Team
+      email: build-env@company.com
+  servers:
+    - url: https://api.buildenvironment.company.com/v1
+      description: Production server
+    - url: https://staging-api.buildenvironment.company.com/v1
+      description: Staging server
+    - url: http://localhost:8080
+      description: Development server

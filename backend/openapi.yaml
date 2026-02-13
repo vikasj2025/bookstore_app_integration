@@ -1,0 +1,533 @@
+openapi: 3.0.3
+info:
+  title: Automated Build Environment Setup and Configuration API
+  description: API for automated build tool detection, provisioning, configuration, and management with secure repository access and rollback capabilities
+  version: 1.0.0
+  contact:
+    name: Build Environment Team
+    email: build-env@company.com
+servers:
+  - url: https://api.buildenvironment.company.com/v1
+    description: Production server
+  - url: https://staging-api.buildenvironment.company.com/v1
+    description: Staging server
+  - url: http://localhost:8080/api/v1
+    description: Development server
+security:
+  - bearerAuth: []
+paths:
+  /maven-wrapper/download:
+    post:
+      tags:
+        - Maven Wrapper
+      summary: Auto-download Maven Wrapper
+      description: Automatically downloads and configures Maven Wrapper for specified project
+      operationId: downloadMavenWrapper
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MavenWrapperDownloadRequest'
+      responses:
+        '200':
+          description: Maven Wrapper download initiated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MavenWrapperDownloadResponse'
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /maven-wrapper/status/{downloadId}:
+    get:
+      tags:
+        - Maven Wrapper
+      summary: Get Maven Wrapper download status
+      description: Retrieves the current status of Maven Wrapper download operation
+      operationId: getMavenWrapperStatus
+      parameters:
+        - name: downloadId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Download operation ID
+      responses:
+        '200':
+          description: Status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MavenWrapperStatusResponse'
+        '404':
+          description: Download operation not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /build-environment/configure:
+    post:
+      tags:
+        - Build Environment
+      summary: Configure build environment
+      description: Automatically configures build environment with specified tools and settings
+      operationId: configureBuildEnvironment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuildEnvironmentConfigRequest'
+      responses:
+        '202':
+          description: Configuration process initiated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildEnvironmentConfigResponse'
+        '400':
+          description: Invalid configuration parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Configuration conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /build-environment/{environmentId}:
+    get:
+      tags:
+        - Build Environment
+      summary: Get build environment details
+      description: Retrieves detailed information about a specific build environment
+      operationId: getBuildEnvironment
+      parameters:
+        - name: environmentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Build environment ID
+      responses:
+        '200':
+          description: Environment details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildEnvironmentDetails'
+        '404':
+          description: Environment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags:
+        - Build Environment
+      summary: Delete build environment
+      description: Removes build environment and cleans up resources
+      operationId: deleteBuildEnvironment
+      parameters:
+        - name: environmentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Build environment ID
+      responses:
+        '204':
+          description: Environment deleted successfully
+        '404':
+          description: Environment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Cannot delete environment in current state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    MavenWrapperDownloadRequest:
+      type: object
+      required:
+        - projectPath
+        - mavenVersion
+      properties:
+        projectPath:
+          type: string
+          description: Path to the project directory
+        mavenVersion:
+          type: string
+          description: Maven version to download
+          pattern: '^\d+\.\d+\.\d+$'
+        repositoryUrl:
+          type: string
+          format: uri
+          description: Custom repository URL for Maven download
+        forceDownload:
+          type: boolean
+          default: false
+          description: Force re-download even if wrapper exists
+    MavenWrapperDownloadResponse:
+      type: object
+      properties:
+        downloadId:
+          type: string
+          format: uuid
+          description: Unique identifier for download operation
+        status:
+          type: string
+          enum: [INITIATED, IN_PROGRESS, COMPLETED, FAILED]
+          description: Current download status
+        message:
+          type: string
+          description: Status message
+        estimatedCompletionTime:
+          type: string
+          format: date-time
+          description: Estimated completion time
+    MavenWrapperStatusResponse:
+      type: object
+      properties:
+        downloadId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [INITIATED, IN_PROGRESS, COMPLETED, FAILED]
+        progress:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: Download progress percentage
+        startTime:
+          type: string
+          format: date-time
+        completionTime:
+          type: string
+          format: date-time
+        errorMessage:
+          type: string
+          description: Error message if download failed
+        downloadedFiles:
+          type: array
+          items:
+            type: string
+          description: List of successfully downloaded files
+    BuildEnvironmentConfigRequest:
+      type: object
+      required:
+        - environmentName
+        - buildTools
+      properties:
+        environmentName:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: Name of the build environment
+        buildTools:
+          type: array
+          items:
+            $ref: '#/components/schemas/BuildToolConfig'
+          description: List of build tools to configure
+        environmentVariables:
+          type: object
+          additionalProperties:
+            type: string
+          description: Environment variables to set
+        dockerConfig:
+          $ref: '#/components/schemas/DockerConfig'
+        repositoryAccess:
+          type: array
+          items:
+            $ref: '#/components/schemas/RepositoryAccessConfig'
+    BuildEnvironmentConfigResponse:
+      type: object
+      properties:
+        environmentId:
+          type: string
+          format: uuid
+          description: Unique identifier for build environment
+        configurationId:
+          type: string
+          format: uuid
+          description: Configuration operation ID
+        status:
+          type: string
+          enum: [PENDING, CONFIGURING, COMPLETED, FAILED]
+          description: Configuration status
+        message:
+          type: string
+          description: Status message
+        estimatedCompletionTime:
+          type: string
+          format: date-time
+    BuildEnvironmentDetails:
+      type: object
+      properties:
+        environmentId:
+          type: string
+          format: uuid
+        environmentName:
+          type: string
+        status:
+          type: string
+          enum: [ACTIVE, INACTIVE, CONFIGURING, ERROR, DELETED]
+        createdAt:
+          type: string
+          format: date-time
+        lastModified:
+          type: string
+          format: date-time
+        installedTools:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstalledTool'
+        environmentVariables:
+          type: object
+          additionalProperties:
+            type: string
+        healthStatus:
+          $ref: '#/components/schemas/HealthStatus'
+        configurationHistory:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConfigurationHistoryItem'
+    BuildToolConfig:
+      type: object
+      required:
+        - toolType
+        - version
+      properties:
+        toolType:
+          type: string
+          enum: [maven, gradle, npm, docker, nodejs, java]
+        version:
+          type: string
+          description: Version to install
+        installationPath:
+          type: string
+          description: Custom installation path
+        configuration:
+          type: object
+          additionalProperties: true
+          description: Tool-specific configuration
+    DockerConfig:
+      type: object
+      properties:
+        baseImage:
+          type: string
+          description: Docker base image
+        registryUrl:
+          type: string
+          format: uri
+          description: Docker registry URL
+        registryCredentials:
+          $ref: '#/components/schemas/RegistryCredentials'
+    RepositoryAccessConfig:
+      type: object
+      required:
+        - repositoryUrl
+        - authenticationType
+      properties:
+        repositoryUrl:
+          type: string
+          format: uri
+        authenticationType:
+          type: string
+          enum: [TOKEN, SSH_KEY, USERNAME_PASSWORD]
+        credentials:
+          $ref: '#/components/schemas/RepositoryCredentials'
+    RegistryCredentials:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          format: password
+        token:
+          type: string
+          format: password
+    RepositoryCredentials:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          format: password
+        token:
+          type: string
+          format: password
+        sshPrivateKey:
+          type: string
+          format: password
+        sshPassphrase:
+          type: string
+          format: password
+    InstalledTool:
+      type: object
+      properties:
+        toolType:
+          type: string
+          enum: [maven, gradle, npm, docker, nodejs, java]
+        version:
+          type: string
+        installationPath:
+          type: string
+        isDefault:
+          type: boolean
+        installedAt:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [ACTIVE, INACTIVE, ERROR]
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [HEALTHY, DEGRADED, UNHEALTHY, UNKNOWN]
+        lastChecked:
+          type: string
+          format: date-time
+        uptime:
+          type: integer
+          description: Uptime in seconds
+    ConfigurationHistoryItem:
+      type: object
+      properties:
+        changeId:
+          type: string
+          format: uuid
+        changeType:
+          type: string
+          enum: [CREATE, UPDATE, DELETE, ROLLBACK]
+        timestamp:
+          type: string
+          format: date-time
+        changedBy:
+          type: string
+        summary:
+          type: string
+        details:
+          type: object
+          additionalProperties: true
+    ErrorResponse:
+      type: object
+      required:
+        - error
+        - message
+      properties:
+        error:
+          type: string
+          description: Error code
+        message:
+          type: string
+          description: Human-readable error message
+        details:
+          type: string
+          description: Additional error details
+        timestamp:
+          type: string
+          format: date-time
+        path:
+          type: string
+          description: API path where error occurred
+        requestId:
+          type: string
+          format: uuid
+          description: Unique request identifier for debugging
+        validationErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          description: Field-specific validation errors
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type: string
+          description: Field name that failed validation
+        message:
+          type: string
+          description: Validation error message
+        rejectedValue:
+          type: string
+          description: Value that was rejected
+tags:
+  - name: Maven Wrapper
+    description: Operations related to Maven Wrapper auto-download and management
+  - name: Build Environment
+    description: Build environment configuration and management operations
+  - name: Repository Access
+    description: Secure repository access configuration and validation
+  - name: Build Tools
+    description: Build tool version management and installation
+  - name: Health Check
+    description: Environment health monitoring and validation
+  - name: Configuration Rollback
+    description: Configuration snapshot and rollback management

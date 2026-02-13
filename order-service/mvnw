@@ -1,0 +1,43 @@
+#!/bin/sh
+set -euo pipefail
+WRAPPER_JAR=".mvn/wrapper/maven-wrapper.jar"
+WRAPPER_PROPERTIES=".mvn/wrapper/maven-wrapper.properties"
+CURL_AUTH=""
+
+if [ -n "${MVNW_USERNAME:-}" ] && [ -n "${MVNW_PASSWORD:-}" ]; then
+  CURL_AUTH="-u ${MVNW_USERNAME}:${MVNW_PASSWORD}"
+fi
+
+if [ ! -f "$WRAPPER_PROPERTIES" ]; then
+  echo "Missing $WRAPPER_PROPERTIES" >&2
+  exit 1
+fi
+
+PROPS_URL=$(sed -n 's/^wrapperUrl=//p' "$WRAPPER_PROPERTIES")
+DIST_URL=$(sed -n 's/^distributionUrl=//p' "$WRAPPER_PROPERTIES")
+
+mkdir -p .mvn/wrapper
+
+if [ ! -f "$WRAPPER_JAR" ]; then
+  echo "Downloading Maven Wrapper JAR..."
+  curl -fsSL $CURL_AUTH "$PROPS_URL" -o "$WRAPPER_JAR"
+fi
+
+if [ ! -d ".mvn/wrapper/apache-maven" ]; then
+  echo "Provisioning Maven from $DIST_URL"
+  TMP=$(mktemp -d)
+  curl -fsSL $CURL_AUTH "$DIST_URL" -o "$TMP/maven.zip"
+  if command -v unzip >/dev/null 2>&1; then
+    unzip -q "$TMP/maven.zip" -d "$TMP"
+  elif command -v java >/dev/null 2>&1; then
+    # Use JDK jar tool to extract if unzip is unavailable
+    (cd "$TMP" && jar xf maven.zip)
+  else
+    echo "Neither unzip nor Java (jar) available to extract Maven distribution." >&2
+    exit 2
+  fi
+  mv "$TMP"/apache-maven-* .mvn/wrapper/apache-maven
+  rm -rf "$TMP"
+fi
+
+exec .mvn/wrapper/apache-maven/bin/mvn "$@"

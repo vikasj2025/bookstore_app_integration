@@ -1,0 +1,148 @@
+#!/bin/sh
+# ----------------------------------------------------------------------------
+# Maven Wrapper Startup Script (with auto-download)
+# ----------------------------------------------------------------------------
+
+set -e
+MVNW_VERBOSE=${MVNW_VERBOSE:-false}
+
+# OS specific support.  $var _must_ be set to either true or false.
+cygwin=false; darwin=false; mingw=false
+case "`uname`" in
+  CYGWIN*) cygwin=true ;;
+  MINGW*) mingw=true ;;
+  Darwin*) darwin=true ;;
+  AIX*) ;;
+  *) ;;
+esac
+
+# Initialize variables
+MAVEN_PROJECTBASEDIR=${MAVEN_BASEDIR:-"`dirname "$0"`"}
+WRAPPER_JAR="$MAVEN_PROJECTBASEDIR/.mvn/wrapper/maven-wrapper.jar"
+WRAPPER_PROPERTIES="$MAVEN_PROJECTBASEDIR/.mvn/wrapper/maven-wrapper.properties"
+WRAPPER_URL="https://repo.maven.apache.org/maven2/io/takari/maven-wrapper/0.5.6/maven-wrapper-0.5.6.jar"
+
+# Read URL from properties if present
+if [ -r "$WRAPPER_PROPERTIES" ]; then
+  PROP_URL=`sed -n 's/^wrapperUrl=//p' "$WRAPPER_PROPERTIES"`
+  if [ -n "$PROP_URL" ]; then
+    WRAPPER_URL="$PROP_URL"
+  fi
+fi
+
+# Ensure wrapper jar exists (download if needed)
+if [ ! -r "$WRAPPER_JAR" ]; then
+  if [ "$MVNW_VERBOSE" = true ]; then
+    echo "- Downloading Maven wrapper jar from: $WRAPPER_URL"
+  fi
+  mkdir -p "`dirname "$WRAPPER_JAR"`"
+  # Try curl
+  if command -v curl >/dev/null 2>&1; then
+    curl -fsSL -o "$WRAPPER_JAR" "$WRAPPER_URL" || rm -f "$WRAPPER_JAR"
+  fi
+  # Try wget if curl failed
+  if [ ! -r "$WRAPPER_JAR" ] && command -v wget >/dev/null 2>&1; then
+    wget -q -O "$WRAPPER_JAR" "$WRAPPER_URL" || rm -f "$WRAPPER_JAR"
+  fi
+  # Fallback to Java downloader
+  if [ ! -r "$WRAPPER_JAR" ]; then
+    if [ "$MVNW_VERBOSE" = true ]; then
+      echo "- Falling back to Java-based downloader"
+    fi
+    # Find Java
+    if [ -z "$JAVA_HOME" ]; then
+      JAVA_EXE="`command -v java || true`"
+    else
+      JAVA_EXE="$JAVA_HOME/bin/java"
+    fi
+    if [ -z "$JAVA_EXE" ]; then
+      echo "Error: JAVA_HOME is not defined and no 'java' command could be found in your PATH."
+      exit 1
+    fi
+    TMP_JAVADIR="${MAVEN_PROJECTBASEDIR}/.mvn/wrapper"
+    mkdir -p "$TMP_JAVADIR"
+    JAVASRC="$TMP_JAVADIR/MavenWrapperDownloader.java"
+    cat > "$JAVASRC" <<'EOF'
+/*
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+     https://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+*/
+
+import java.net.*;
+import java.io.*;
+import java.nio.channels.*;
+import java.util.Properties;
+
+public class MavenWrapperDownloader {
+    private static final String WRAPPER_VERSION = "0.5.6";
+    private static final String DEFAULT_DOWNLOAD_URL = "https://repo.maven.apache.org/maven2/io/takari/maven-wrapper/" + WRAPPER_VERSION + "/maven-wrapper-" + WRAPPER_VERSION + ".jar";
+    private static final String MAVEN_WRAPPER_PROPERTIES_PATH = ".mvn/wrapper/maven-wrapper.properties";
+    private static final String MAVEN_WRAPPER_JAR_PATH = ".mvn/wrapper/maven-wrapper.jar";
+    private static final String PROPERTY_NAME_WRAPPER_URL = "wrapperUrl";
+
+    public static void main(String args[]) {
+        File baseDirectory = new File(args.length > 0 ? args[0] : ".");
+        File mavenWrapperPropertyFile = new File(baseDirectory, MAVEN_WRAPPER_PROPERTIES_PATH);
+        String url = DEFAULT_DOWNLOAD_URL;
+        if(mavenWrapperPropertyFile.exists()) {
+            try (FileInputStream in = new FileInputStream(mavenWrapperPropertyFile)) {
+                Properties mavenWrapperProperties = new Properties();
+                mavenWrapperProperties.load(in);
+                url = mavenWrapperProperties.getProperty(PROPERTY_NAME_WRAPPER_URL, url);
+            } catch (IOException ignored) { }
+        }
+        try {
+            downloadFileFromURL(url, new File(baseDirectory, MAVEN_WRAPPER_JAR_PATH));
+        } catch (Throwable e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+    private static void downloadFileFromURL(String urlString, File destination) throws Exception {
+        URL website = new URL(urlString);
+        ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+        try (FileOutputStream fos = new FileOutputStream(destination)) {
+            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+        }
+        rbc.close();
+    }
+}
+EOF
+    "$JAVA_EXE" -version >/dev/null 2>&1 || true
+    "$JAVA_EXE" -cp "$TMP_JAVADIR" MavenWrapperDownloader "$MAVEN_PROJECTBASEDIR" || true
+  fi
+fi
+
+# Locate Java executable for running Maven
+if [ -z "$JAVA_HOME" ]; then
+  JAVA_EXE="`command -v java || true`"
+else
+  JAVA_EXE="$JAVA_HOME/bin/java"
+fi
+if [ -z "$JAVA_EXE" ]; then
+  echo "Error: JAVA_HOME is not defined and no 'java' command could be found in your PATH."
+  exit 1
+fi
+
+# For Cygwin, ensure paths are in UNIX format before anything is touched.
+if $cygwin ; then
+  [ -n "$JAVA_HOME" ] && JAVA_HOME=`cygpath --unix "$JAVA_HOME"`
+fi
+
+# Execute Maven Wrapper
+exec "$JAVA_EXE" -classpath "$WRAPPER_JAR" -Dmaven.home="$MAVEN_PROJECTBASEDIR/.mvn/wrapper" -DwrapperUrl="$WRAPPER_URL" org.apache.maven.wrapper.MavenWrapperMain "$@"

@@ -1,0 +1,74 @@
+{
+  "epicId": "0",
+  "epicKey": "fab98d15-9737-45f7-b8e5-f1554f19a327",
+  "epicSummary": "Modern User Authentication and Page Navigation",
+  "epicDescription": "This epic modernizes the user authentication flow by replacing legacy JSP-based redirect mechanisms with Next.js server-side navigation. It ensures users are automatically directed to the appropriate pages after OAuth SSO authentication, delivering a seamless login experience while eliminating technical debt from outdated technology.",
+  "owner": "frontend developer",
+  "status": "In Progress",
+  "sections": {
+    "frontend": {
+      "functional_requirements": "Enable automatic user redirection to intended destinations after successful OAuth SSO authentication using modern Next.js server-side navigation. Replace legacy JSP scriptlet-based redirects with React-based routing to deliver seamless post-authentication user experience without requiring manual navigation.",
+      "technical_requirements": "Implement Next.js Server-Side Rendering (SSR) navigation using getServerSideProps or Next.js middleware to replace JSP scriptlet redirects. Use HTTP 302/307 redirect responses with proper session context maintenance. Ensure compatibility with OAuth 2.0 authentication flows and JWT token validation. Implement standardized redirect logic that executes on the server before page rendering.",
+      "devops_requirements": "Set up CI/CD pipeline for Next.js frontend deployment with automated testing including Cypress end-to-end tests covering Next.js → API Gateway → microservices flow. Implement containerization with Docker for consistent deployment environments. Configure monitoring and alerting for frontend redirect failures and authentication flow issues.",
+      "stories": [
+        {
+          "storyId": "f2de9162-0d27-4254-9814-d5c1185dd9f1",
+          "summary": "Migrate JSP Redirect to Next.js Server-Side Navigation",
+          "description": "Replace JSP scriptlet-based redirects with Next.js server-side navigation. Implement server-side redirect logic using getServerSideProps or middleware that executes before page rendering and sends HTTP 302/307 redirect response to client browser with target URL while maintaining session context.",
+          "assignee": "frontend developer",
+          "status": "In Progress",
+          "storyPoints": 2,
+          "priority": "High",
+          "labels": ["Next.js", "SSR", "Authentication", "Migration", "JSP Replacement"]
+        },
+        {
+          "storyId": "auth-redirect-validation",
+          "summary": "Implement Authentication Redirect Validation",
+          "description": "Validate redirect behavior in Cypress end-to-end tests covering the complete flow from Next.js frontend through API Gateway to microservices. Ensure proper session context maintenance and JWT token validation during redirects.",
+          "assignee": "QA Engineer",
+          "status": "To Do",
+          "storyPoints": 3,
+          "priority": "Medium",
+          "labels": ["Testing", "E2E", "Cypress", "Authentication"]
+        }
+      ]
+    },
+    "backend": {
+      "functional_requirements": "Provide secure OAuth SSO authentication services with JWT token generation and validation. Support automatic user redirection logic by maintaining session state and providing redirect target URLs. Ensure seamless integration with Next.js frontend for post-authentication navigation.",
+      "technical_requirements": "Implement OAuth 2.0 authentication flow with JWT token generation and validation. Develop APIs for session management and redirect target determination. Ensure backward compatibility during JSP to Next.js migration phase. Implement proper security headers and CORS configuration for frontend integration.",
+      "devops_requirements": "Automate build, test, and deployment of authentication microservices using CI/CD pipelines. Implement containerization with Docker and orchestration with Kubernetes. Set up monitoring for authentication success/failure rates, token validation performance, and API response times. Configure alerts for authentication service downtime and security incidents.",
+      "stories": [
+        {
+          "storyId": "oauth-jwt-service",
+          "summary": "Implement OAuth SSO with JWT Token Management",
+          "description": "Develop OAuth 2.0 authentication service that generates and validates JWT tokens. Implement secure token storage and session management to support seamless user authentication flow with Next.js frontend.",
+          "assignee": "Backend Developer",
+          "status": "To Do",
+          "storyPoints": 8,
+          "priority": "High",
+          "labels": ["OAuth", "JWT", "Authentication", "Security", "Microservices"]
+        },
+        {
+          "storyId": "redirect-api-service",
+          "summary": "Create Redirect Target API Service",
+          "description": "Implement API service that determines appropriate redirect targets based on user authentication state and intended destination. Provide endpoints for Next.js frontend to query redirect URLs and maintain session context.",
+          "assignee": "Backend Developer",
+          "status": "To Do",
+          "storyPoints": 5,
+          "priority": "Medium",
+          "labels": ["API", "Redirect Logic", "Session Management"]
+        },
+        {
+          "storyId": "legacy-compatibility",
+          "summary": "Maintain Legacy JSP Compatibility During Migration",
+          "description": "Ensure backend services support both legacy JSP and new Next.js frontend during migration phase. Implement feature flags and gradual rollout mechanisms to enable smooth transition without breaking existing functionality.",
+          "assignee": "Senior Backend Developer",
+          "status": "To Do",
+          "storyPoints": 5,
+          "priority": "Medium",
+          "labels": ["Migration", "Compatibility", "Feature Flags", "Strangler Fig"]
+        }
+      ]
+    }
+  }
+}

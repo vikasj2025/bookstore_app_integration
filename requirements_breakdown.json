@@ -1,0 +1,84 @@
+{
+  "epicId": "2",
+  "epicKey": "6090e9de-5282-4c09-af93-e51b779f7a61",
+  "epicSummary": "Cloud Platform Infrastructure and Automated Deployment Pipeline",
+  "epicDescription": "This epic establishes a complete cloud-native infrastructure foundation on Google Cloud Platform that enables reliable, automated deployment of all bookstore platform services. It delivers a production-ready environment with automated quality checks, security controls, monitoring capabilities, and seamless integration between frontend and backend systems, ensuring the platform can scale securely while maintaining high availability.",
+  "owner": "Platform Engineer",
+  "status": "In Progress",
+  "sections": {
+    "frontend": {
+      "functional_requirements": "Enable users to access the bookstore platform through a Next.js application with server-side rendering and static site generation capabilities. Provide user-friendly error handling without exposing technical details. Ensure seamless communication with backend services through API Gateway with proper CORS configuration for development and production environments.",
+      "technical_requirements": "Implement using Next.js framework with SSR/SSG capabilities. Configure integration with API Gateway for backend communication. Implement CORS policies for authorized origins (localhost:4200 for development). Support environment-specific configuration and responsive design for the bookstore interface. Ensure proper error handling with user-friendly messaging.",
+      "devops_requirements": "Automate the build and deployment of Next.js frontend using GitLab CI/CD pipelines with npm build system. Deploy to GKE cluster with namespace isolation for dev, staging, and production environments. Implement blue-green deployment strategy for zero-downtime releases. Configure Cloud Logging and Cloud Monitoring for frontend observability. Set up automated testing infrastructure with Jest for unit tests and integration testing.",
+      "stories": [
+        {
+          "storyId": "FE-001",
+          "summary": "Set up Next.js application with SSR/SSG capabilities",
+          "description": "Initialize Next.js framework for the bookstore platform with server-side rendering and static site generation capabilities to ensure optimal performance and SEO.",
+          "assignee": "Frontend Developer",
+          "status": "To Do",
+          "storyPoints": 5,
+          "priority": "High",
+          "labels": ["Frontend", "Next.js", "SSR"]
+        },
+        {
+          "storyId": "FE-002",
+          "summary": "Integrate frontend with backend services through API Gateway",
+          "description": "Configure frontend to communicate with backend microservices through API Gateway with proper CORS handling and JWT authentication support.",
+          "assignee": "Frontend Developer",
+          "status": "To Do",
+          "storyPoints": 3,
+          "priority": "High",
+          "labels": ["Frontend", "API Gateway", "Integration"]
+        },
+        {
+          "storyId": "FE-003",
+          "summary": "Implement user-friendly error pages",
+          "description": "Create error pages that provide user-friendly messaging without exposing technical details or stack traces, ensuring good user experience during error scenarios.",
+          "assignee": "Frontend Developer",
+          "status": "To Do",
+          "storyPoints": 2,
+          "priority": "Medium",
+          "labels": ["Frontend", "Error Handling", "UX"]
+        }
+      ]
+    },
+    "backend": {
+      "functional_requirements": "Provide reliable and scalable Spring Boot microservices for User, Order, and Checkout operations. Expose versioned REST API endpoints with JWT authentication. Ensure high availability through health monitoring and proper database integration. Support real-time data processing and maintain data consistency across all bookstore operations.",
+      "technical_requirements": "Develop services using Java 21 Spring Boot framework with Cloud SQL PostgreSQL as the data store. Implement Spring Boot Actuator for health endpoints (/actuator/health, /actuator/info). Configure API Gateway routing with versioned endpoints (/api/v1/*) and JWT Bearer token authentication. Integrate with Cloud Logging and Cloud Trace for observability. Use Maven build system with externalized credentials.",
+      "devops_requirements": "Automate the build, deployment, and monitoring of all Spring Boot microservices using GitLab CI/CD pipelines with Maven build system. Deploy to GKE cluster with multi-zone configuration and namespace isolation. Implement blue-green deployment strategy with instant rollback capability. Configure Cloud SQL PostgreSQL with encryption at rest and automated backups. Set up comprehensive monitoring with Cloud Logging, Cloud Monitoring, and alerting on threshold violations.",
+      "stories": [
+        {
+          "storyId": "BE-001",
+          "summary": "Initialize Spring Boot microservices for User, Order, and Checkout",
+          "description": "Set up Java 21 Spring Boot microservices with actuator health endpoints and Cloud integration for User, Order, and Checkout services.",
+          "assignee": "Backend Developer",
+          "status": "To Do",
+          "storyPoints": 8,
+          "priority": "High",
+          "labels": ["Backend", "Spring Boot", "Microservices"]
+        },
+        {
+          "storyId": "BE-002",
+          "summary": "Configure Cloud SQL PostgreSQL integration",
+          "description": "Set up Cloud SQL PostgreSQL instances with encryption at rest and automated backups for all microservices with proper connection pooling and transaction management.",
+          "assignee": "Backend Developer",
+          "status": "To Do",
+          "storyPoints": 5,
+          "priority": "High",
+          "labels": ["Backend", "Database", "PostgreSQL"]
+        },
+        {
+          "storyId": "BE-003",
+          "summary": "Develop versioned REST API endpoints",
+          "description": "Create REST endpoints with /api/v1/* versioning, JWT authentication, proper error handling, and OpenAPI documentation for all microservices.",
+          "assignee": "Backend Developer",
+          "status": "To Do",
+          "storyPoints": 8,
+          "priority": "High",
+          "labels": ["Backend", "API", "Authentication"]
+        }
+      ]
+    }
+  }
+}
